@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { projects } from "@/lib/data";
-import { Github, ExternalLink } from "lucide-react";
+import { Github, ExternalLink, Book, BarChart3 } from "lucide-react";
 
 export default function Projects() {
   return (
@@ -61,6 +61,28 @@ export default function Projects() {
                     <a className="text-[#3498DB] hover:underline font-medium">View Details</a>
                   </Link>
                   <div className="flex gap-2">
+                    {project.hasJupyterNotebook && (
+                      <Link href={`/notebook/${project.id}`}>
+                        <a
+                          className="text-blue-500 hover:text-blue-700 transition-colors"
+                          aria-label="Jupyter Notebook"
+                          title="View Jupyter Notebook"
+                        >
+                          <Book className="h-5 w-5" />
+                        </a>
+                      </Link>
+                    )}
+                    {project.hasTableauDashboard && (
+                      <Link href={`/dashboard/${project.id}`}>
+                        <a
+                          className="text-green-500 hover:text-green-700 transition-colors"
+                          aria-label="Tableau Dashboard" 
+                          title="View Tableau Dashboard"
+                        >
+                          <BarChart3 className="h-5 w-5" />
+                        </a>
+                      </Link>
+                    )}
                     {project.githubUrl && (
                       <a
                         href={project.githubUrl}
@@ -68,6 +90,7 @@ export default function Projects() {
                         rel="noopener noreferrer"
                         className="text-gray-500 hover:text-gray-700 transition-colors"
                         aria-label="GitHub Repository"
+                        title="GitHub Repository"
                       >
                         <Github className="h-5 w-5" />
                       </a>
@@ -79,6 +102,7 @@ export default function Projects() {
                         rel="noopener noreferrer"
                         className="text-gray-500 hover:text-gray-700 transition-colors"
                         aria-label="Live Demo"
+                        title="Live Demo"
                       >
                         <ExternalLink className="h-5 w-5" />
                       </a>
