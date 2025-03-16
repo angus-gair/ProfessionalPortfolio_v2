@@ -6,8 +6,6 @@ import NotFound from "@/pages/not-found";
 import Header from "@/components/Header";
 import Home from "@/pages/Home";
 import ProjectDetail from "@/pages/ProjectDetail";
-import NotebookDetail from "@/pages/NotebookDetail";
-import TableauDashboard from "@/components/TableauDashboard";
 import Footer from "@/components/Footer";
 
 function Router() {
@@ -17,10 +15,6 @@ function Router() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/project/:id" component={ProjectDetail} />
-        <Route path="/notebook/:id" component={NotebookDetail} />
-        <Route path="/dashboard/:id">
-          {(params) => <TableauDashboard dashboardId={params.id} />}
-        </Route>
         <Route component={NotFound} />
       </Switch>
       <Footer />

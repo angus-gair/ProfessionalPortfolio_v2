@@ -88,23 +88,6 @@ export const experiences = [
 
 export const projects = [
   {
-    id: "xmas-budget-optimization",
-    title: "Christmas Budget Optimization",
-    description: "An interactive notebook for optimizing holiday gift spending using linear programming and budget constraints.",
-    fullDescription: "The Christmas Budget Optimization project helps users maximize gift value while staying within budget constraints. Using linear programming techniques, this project creates an optimal gift allocation strategy based on recipient preferences, gift costs, and available budget.",
-    methodology: "The solution employs Python's PuLP library to formulate and solve the linear programming problem. The notebook guides users through the process of defining constraints, setting up the optimization model, and visualizing the results with matplotlib. It also includes a sensitivity analysis section to explore how changes in budget affect optimal gift selection.",
-    results: "The optimization model successfully allocates funds across different gift categories while maximizing overall recipient satisfaction. Users can adjust parameters to reflect their own personal budget constraints and recipient preferences. The visualizations help users understand trade-offs between different allocation strategies.",
-    imageUrl: "https://images.unsplash.com/photo-1543589077-47d81606c1bf?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80",
-    category: "Data Science",
-    categoryColor: "accent",
-    technologies: ["Python", "PuLP", "Linear Programming"],
-    githubUrl: "https://github.com/angus-gair/xmas-budget-optimization",
-    liveUrl: "#",
-    hasJupyterNotebook: true,
-    jupyterNotebookId: "xmas-budget",
-    hasTableauDashboard: false
-  },
-  {
     id: "customer-segmentation",
     title: "Customer Segmentation Dashboard",
     description: "An interactive dashboard for customer segmentation analysis using K-means clustering and visualization techniques.",
@@ -154,7 +137,7 @@ export const projects = [
     liveUrl: "#",
     hasJupyterNotebook: false,
     hasTableauDashboard: true,
-    tableauDashboardId: "mmm-model"
+    tableauDashboardId: "financial-analysis-dashboard"
   },
   {
     id: "nlp-api",
@@ -205,6 +188,6 @@ export const projects = [
     liveUrl: "#",
     hasJupyterNotebook: false,
     hasTableauDashboard: true,
-    tableauDashboardId: "rewards-performance"
+    tableauDashboardId: "tableau-integration-dashboard"
   }
 ];
