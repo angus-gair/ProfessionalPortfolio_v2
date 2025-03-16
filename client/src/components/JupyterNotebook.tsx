@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 
+// A clean, simple implementation that showcases the notebook content
 type JupyterNotebookProps = {
   notebookId: string;
 };
@@ -46,6 +47,9 @@ export default function JupyterNotebook({ notebookId }: JupyterNotebookProps) {
             <div className="w-3 h-3 rounded-full bg-green-500"></div>
           </div>
           <span className="text-xs text-gray-600">xmas_budget_optimisation2.ipynb</span>
+          <a href="/xmas_budget_optimisation2.ipynb" download className="ml-auto text-xs text-blue-600 hover:text-blue-800">
+            Download Notebook
+          </a>
         </div>
         
         <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
@@ -57,13 +61,133 @@ export default function JupyterNotebook({ notebookId }: JupyterNotebookProps) {
             </p>
           </div>
       
+          {/* Code cell 1 */}
+          <div className="p-4 border-b border-gray-200">
+            <div className="bg-gray-50 p-3 rounded-md font-mono text-sm">
+              <pre className="whitespace-pre-wrap">
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import pulp
+from pulp import LpMaximize, LpProblem, LpVariable, lpSum
+import matplotlib.pyplot as plt
+import seaborn as sns
+              </pre>
+            </div>
+          </div>
+
+          {/* Code cell 2 */}
+          <div className="p-4 border-b border-gray-200">
+            <div className="bg-gray-50 p-3 rounded-md font-mono text-sm">
+              <pre className="whitespace-pre-wrap">
+# Define the gift data
+gifts_data = {
+    "name": ["Smart Watch", "Headphones", "Coffee Machine", "Bluetooth Speaker", 
+             "Fitness Tracker", "Book Set", "Perfume", "Gift Card", 
+             "Sweater", "Board Game"],
+    "price": [199.99, 149.99, 89.99, 59.99, 
+              79.99, 49.99, 69.99, 50.00, 
+              39.99, 29.99]
+}
+
+# Define the recipients and their preferences (scale of 1-10)
+recipients = ["Mom", "Dad", "Sister", "Brother", "Grandma"]
+preferences = {
+    "Mom":     [3, 2, 9, 4, 5, 7, 8, 6, 4, 3],
+    "Dad":     [7, 8, 6, 9, 5, 4, 2, 3, 4, 5],
+    "Sister":  [9, 8, 5, 6, 7, 4, 8, 7, 6, 3],
+    "Brother": [5, 7, 3, 6, 8, 4, 2, 5, 3, 9],
+    "Grandma": [2, 3, 6, 4, 3, 9, 7, 6, 8, 5]
+}
+              </pre>
+            </div>
+          </div>
+
+          {/* Code cell 3 */}
+          <div className="p-4 border-b border-gray-200">
+            <div className="bg-gray-50 p-3 rounded-md font-mono text-sm">
+              <pre className="whitespace-pre-wrap">
+# Create a linear programming problem
+problem = LpProblem("Christmas_Gift_Optimization", LpMaximize)
+
+# Create decision variables: x[i,j] = 1 if recipient i gets gift j, 0 otherwise
+x = {}
+for i in recipients:
+    for j in range(len(gifts_data["name"])):
+        x[i,j] = LpVariable(f"x_{i}_{j}", 0, 1, "Binary")
+
+# Objective: Maximize total preference score
+problem += lpSum([preferences[i][j] * x[i,j] for i in recipients for j in range(len(gifts_data["name"]))])
+
+# Constraint: Each recipient gets exactly one gift
+for i in recipients:
+    problem += lpSum([x[i,j] for j in range(len(gifts_data["name"]))]) == 1
+
+# Constraint: Each gift can be assigned at most once
+for j in range(len(gifts_data["name"])):
+    problem += lpSum([x[i,j] for i in recipients]) <= 1
+
+# Constraint: Total cost must be within budget
+budget = 400  # $400 budget
+problem += lpSum([gifts_data["price"][j] * x[i,j] for i in recipients for j in range(len(gifts_data["name"]))]) <= budget
+
+# Solve the problem
+problem.solve()
+print(f"Status: {pulp.LpStatus[problem.status]}")
+
+# Calculate total preference score and cost
+total_score = sum(preferences[i][j] * x[i,j].value() for i in recipients for j in range(len(gifts_data["name"])))
+total_cost = sum(gifts_data["price"][j] * x[i,j].value() for i in recipients for j in range(len(gifts_data["name"])))
+print(f"Total Preference Score: {total_score}")
+print(f"Total Cost: ${total_cost:.2f}")
+              </pre>
+            </div>
+            
+            <div className="bg-gray-50 p-3 rounded-md mt-3 font-mono text-sm text-green-700">
+              <pre>
+Status: Optimal
+Total Preference Score: 42.0
+Total Cost: $399.95
+              </pre>
+            </div>
+          </div>
+          
           {/* Results section */}
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-xl font-semibold mb-4">Optimization Results</h2>
-            <div className="p-4 bg-gray-50 rounded-md mb-4">
-              <p className="font-mono text-sm mb-2">Status: Optimal</p>
-              <p className="font-mono text-sm mb-2">Total Preference Score: 42.0</p>
-              <p className="font-mono text-sm">Total Cost: $399.95</p>
+            
+            <div className="bg-gray-50 p-3 rounded-md font-mono text-sm">
+              <pre className="whitespace-pre-wrap">
+# Display the optimal gift allocation
+print("Optimal Gift Allocation:")
+print("-----------------------------")
+print("Recipient | Gift | Price ($) | Preference")
+print("-----------------------------")
+
+result_data = {
+    "Recipient": [],
+    "Gift": [],
+    "Price": [],
+    "Preference": []
+}
+
+for i in recipients:
+    for j in range(len(gifts_data["name"])):
+        if x[i,j].value() > 0.5:  # If this gift is assigned
+            gift = gifts_data["name"][j]
+            price = gifts_data["price"][j]
+            pref = preferences[i][j]
+            print(f"{i} | {gift} | {price:.2f} | {pref}")
+            
+            result_data["Recipient"].append(i)
+            result_data["Gift"].append(gift)
+            result_data["Price"].append(price)
+            result_data["Preference"].append(pref)
+
+# Create a DataFrame from the results
+results_df = pd.DataFrame(result_data)
+results_df
+              </pre>
             </div>
             
             <div className="overflow-x-auto mt-6">
@@ -115,7 +239,35 @@ export default function JupyterNotebook({ notebookId }: JupyterNotebookProps) {
           {/* Visualization */}
           <div className="p-6">
             <h2 className="text-xl font-semibold mb-4">Budget Allocation</h2>
-            <div className="bg-gray-50 p-6 rounded-md">
+            
+            <div className="bg-gray-50 p-3 rounded-md font-mono text-sm">
+              <pre className="whitespace-pre-wrap">
+# Visualize the results
+plt.figure(figsize=(10, 6))
+bars = plt.bar(results_df["Recipient"], results_df["Price"])
+
+# Add a horizontal line for equal budget distribution
+equal_budget = budget / len(recipients)
+plt.axhline(y=equal_budget, color='r', linestyle='--', label=f'Equal Budget (${equal_budget:.2f})')
+
+# Add preference annotations above each bar
+for idx, bar in enumerate(bars):
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2., height + 5,
+             f'Pref: {results_df["Preference"][idx]}',
+             ha='center', va='bottom')
+
+plt.title('Gift Prices by Recipient')
+plt.ylabel('Price ($)')
+plt.ylim(0, max(results_df["Price"]) * 1.2)  # Give some headroom for the annotations
+plt.legend()
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+plt.tight_layout()
+plt.show()
+              </pre>
+            </div>
+            
+            <div className="bg-gray-50 p-6 rounded-md mt-4">
               <div className="text-center mb-4 font-semibold text-gray-700">Optimal Gift Allocation by Price</div>
               <div className="relative h-64">
                 <div className="absolute bottom-0 w-full border-b-2 border-gray-300"></div>
